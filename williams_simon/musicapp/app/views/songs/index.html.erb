@@ -1,0 +1,23 @@
+<h1>Songs for <%=@artist.artist_name %></h1>
+<table>
+  <tr>
+    <th>Song Title</th>
+    <th>Genre</th>
+    <th>Release Date</th>
+    <th>Duration (secs)</th>
+  </tr>
+	<% @artist.songs.each do |song| %>
+		<tr>
+      		<td><%= song.song_name %></td>
+			<td><%= song.genre %></td>
+			<td><%= song.release_date %></td>
+			<td><%= song.duration %></td>
+			<td><%= link_to "Edit song", edit_artist_song_path(@artist,song) %>
+			<br>
+		</tr>
+	<% end %>
+</table>
+<br><br>
+<%= link_to "Create a new song", new_artist_song_path %>
+<br><br>
+<%= link_to "Return to list of artists", artists_path %>

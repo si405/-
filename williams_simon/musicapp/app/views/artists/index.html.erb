@@ -1,0 +1,21 @@
+<h1>Artists</h1>
+
+<%= link_to "Create a new artist", new_artist_path %>
+<br><br>
+<%= link_to "View all songs", songs_all_path %>
+<br><br>
+
+<table>
+  <tr>
+    <th>Artist Name</th>
+    <th>Age</th>
+  </tr>
+	<% @artists.each do |artist| %>
+		<tr>
+      		<td><%= artist.artist_name %></td>
+			<td><%= artist.artist_age %></td>
+			<td><%= link_to "View artist songs", artist_songs_path(artist) %></td>
+			<br>
+		</tr>
+	<% end %>
+</table>

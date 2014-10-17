@@ -1,0 +1,20 @@
+<br><br>
+<table>
+  <tr>
+    <th>Song Title</th>
+    <th>Genre</th>
+    <th>Release Date</th>
+    <th>Duration</th>
+  </tr>
+	<% @songs.each do |song| %>
+		<tr>
+      		<td><%= song.song_name %></td>
+			<td><%= song.genre %></td>
+			<td><%= song.release_date %></td>
+			<td><%= song.duration %></td>
+			<br>
+		</tr>
+	<% end %>
+</table>
+<br><br>
+<%= link_to "Return to list of artists", artists_path %>

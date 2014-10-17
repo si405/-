@@ -1,0 +1,25 @@
+<h1>Create a song for <%= @artist.artist_name %></h1>
+
+<%= form_for ([@artist, @artist.songs.build]) do |f| %>
+    <p>
+        <%= f.label :song_name %><br>
+        <%= f.text_field :song_name %>
+    </p>
+    <p>
+        <%= f.label :genre %><br>
+        <%= f.text_field :genre %>
+    </p>
+    <p>
+        <%= f.label :duration %><br>
+        <%= f.text_field :duration %>
+    </p>
+    <p>
+        <%= f.label :release_date %><br>
+        <%= f.date_field :release_date %>
+    </p>
+    <p>
+        <%= f.submit %>
+    </p>
+<% end %>
+
+<%= link_to 'View all artists', artists_path %>

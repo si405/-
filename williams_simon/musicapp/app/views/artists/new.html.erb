@@ -1,0 +1,19 @@
+<h1>Create a new artist</h1>
+
+<%= form_for @artist do |f| %>
+	<p>
+    	<%= f.label :artist_name %><br>
+   		<%= f.text_field :artist_name %>
+ 	</p>
+ 
+  	<p>
+   		 <%= f.label :artist_age %><br>
+  		 <%= f.text_area :artist_age %>
+  	</p>
+ 
+  	<p>
+    	<%= f.submit %>
+  	</p>
+<% end %>
+
+<%= link_to 'View all artists', artists_path %>
