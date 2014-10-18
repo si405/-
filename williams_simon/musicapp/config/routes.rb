@@ -6,6 +6,8 @@ Rails.application.routes.draw do
 
   get 'songs/all' => 'songs#all'
 
+  delete 'songs/destroy' => 'songs#destroy_song'
+
   root "artists#index"
 
   # The priority is based upon order of creation: first created -> highest priority.
