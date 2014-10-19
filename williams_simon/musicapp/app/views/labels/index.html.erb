@@ -1,0 +1,19 @@
+<h1>Labels</h1>
+<table>
+  <tr>
+    <th>Label Title</th>
+ </tr>
+	<% @labels.each do |label| %>
+		<tr>
+      		<td><%= label.label_name %></td>
+			<td><%= link_to "Edit label", edit_label_path(label) %></td>
+			<td><%= link_to "View all songs for this label", label_path(label),
+							method: :post %></td>
+			<br>
+		</tr>
+	<% end %>
+</table>
+<br><br>
+<%= link_to "Create a new label", new_label_path %>
+<br><br>
+<%= link_to "Return to list of artists", artists_path %>

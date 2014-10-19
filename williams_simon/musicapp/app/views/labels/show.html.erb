@@ -1,15 +1,13 @@
-<h1>Artists</h1>
+<h1>All Artists For Label: <%= @label.label_name%></h1>
 <table>
   <tr>
     <th>Artist Name</th>
     <th>Age</th>
-    <th>Label</th>
   </tr>
-	<% @artists.each do |artist| %>
+	<% @label.artists.each do |artist| %>
 		<tr>
       		<td><%= artist.artist_name %></td>
 			<td><%= artist.artist_age %></td>
-			<td><%= artist.label_id %></td>
 			<td><%= link_to "View artist songs", artist_songs_path(artist) %></td>
 			<td><%= link_to "Edit artist", edit_artist_path(artist) %></td>
 			<td><%= link_to "Delete artist", artist_path(artist),
@@ -24,4 +22,6 @@
 <%= link_to "View all songs", songs_all_path %>
 <br><br>
 <%= link_to "View all labels", labels_path %>
+<br><br>
+<%= link_to "View all artists", artists_path %>
 <br><br>

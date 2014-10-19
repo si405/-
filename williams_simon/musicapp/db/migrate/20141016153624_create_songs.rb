@@ -5,7 +5,7 @@ class CreateSongs < ActiveRecord::Migration
       t.string :song_name
       t.string :genre
       t.date   :release_date
-      t.time   :duration
+      t.integer  :duration
       t.timestamps
     end
   end

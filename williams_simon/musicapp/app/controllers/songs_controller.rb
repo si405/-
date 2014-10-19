@@ -42,6 +42,7 @@ class SongsController < ApplicationController
 		@song.destroy
 		redirect_to songs_all_path
 	end
+	
 	private
 	    def song_params
   	    params.require(:song).permit(:song_name, :genre, :duration, :release_date)

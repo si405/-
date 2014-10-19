@@ -8,6 +8,11 @@ Rails.application.routes.draw do
 
   delete 'songs/destroy' => 'songs#destroy_song'
 
+  resources :labels
+
+  post 'labels/:id' => 'labels#show'
+
+
   root "artists#index"
 
   # The priority is based upon order of creation: first created -> highest priority.

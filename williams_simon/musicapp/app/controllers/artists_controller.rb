@@ -27,7 +27,6 @@ class ArtistsController < ApplicationController
 		@artist = Artist.find(params[:id])
 		@artist.destroy
 		@songs = Song.search params[:artist_id]
-		binding.pry
 		redirect_to artists_path
 	end
 

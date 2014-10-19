@@ -11,11 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141017165338) do
+ActiveRecord::Schema.define(version: 20141016153624) do
 
   create_table "artists", force: true do |t|
     t.string   "artist_name"
     t.integer  "artist_age"
+    t.integer  "label_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "artists", ["label_id"], name: "index_artists_on_label_id"
+
+  create_table "labels", force: true do |t|
+    t.string   "label_name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
