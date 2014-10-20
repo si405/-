@@ -21,6 +21,7 @@ class ArtistsController < ApplicationController
 
 	def update
 		@artist = Artist.find(params[:id])
+		@artist.label_id = params[:label][:label_id]
 		@artist.update(artist_params)
 		redirect_to artists_path
 	end
@@ -28,7 +29,6 @@ class ArtistsController < ApplicationController
 	def destroy
 		@artist = Artist.find(params[:id])
 		@artist.destroy
-		@songs = Song.search params[:artist_id]
 		redirect_to artists_path
 	end
 
