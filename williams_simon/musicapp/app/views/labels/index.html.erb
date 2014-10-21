@@ -1,19 +1,27 @@
+<div class="col-xs-12" >
+<div class="col-xs-8 col-xs-offset-2">
+<div class="well">
 <h1>Labels</h1>
-<table>
+<table class="table table-responsive table-bordered table-hover">
   <tr>
-    <th>Label Title</th>
+    <th>Labels</th>
  </tr>
 	<% @labels.each do |label| %>
 		<tr>
       		<td><%= label.label_name %></td>
-			<td><%= link_to "Edit label", edit_label_path(label) %></td>
 			<td><%= link_to "View all artists for this label", label_path(label),
-							method: :post %></td>
+							method: :post, :class => 'btn btn-primary' %></td>
+			<td><%= link_to "Edit label", edit_label_path(label), 
+				:class => 'btn btn-info' %></td>
 			<br>
 		</tr>
 	<% end %>
 </table>
 <br><br>
-<%= link_to "Create a new label", new_label_path %>
+<%= link_to "Create a new label", new_label_path, :class => 'btn btn-primary' %>
 <br><br>
-<%= link_to "Return to list of artists", artists_path %>
+<%= link_to "Return to list of artists", artists_path, :class => 'btn btn-primary' %>
+</div>
+</div>
+</div>
+</div>

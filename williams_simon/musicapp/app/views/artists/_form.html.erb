@@ -1,21 +1,17 @@
-<%= form_for @artist do |f| %>
-	<p>
-    	<%= f.label :artist_name %><br>
-   		<%= f.text_field :artist_name %>
- 	</p>
- 
-  <p>
-  	 <%= f.label :artist_age %><br>
-  	 <%= f.text_field :artist_age %>
-  </p>
- 
- <p>
-     <%= collection_select(:label, :label_id, Label.all, :id, 
-        :label_name, :prompt => 'Please select label') %>
-  </p>
- 	<p>
-   	<%= f.submit %>
- 	</p>
+<div class="well">
+<%= simple_form_for(@artist, html: {:class => 'form-horizontal'}) do |f| %>
+    <%= f.input :artist_name, label: false, 
+        input_html:{:class => 'form-control', placeholder: "Name of artist"} %>
+  	<br>
+    <%= f.input :artist_age, label: false, 
+        input_html:{:class => 'form-control', placeholder: "Age of artist"} %>
+    <br>
+    <%= collection_select(:label, :label_id, Label.all, :id, 
+        :label_name, :selected => @artist.label_id, :prompt => 'Please select label') %>
+    <br><br>
+   	<%= f.submit "Submit".html_safe, :class => 'btn btn-lg btn-success' %>
 <% end %>
 
-<%= link_to 'View all artists', artists_path %>
+<br><br>
+<%= link_to 'View all artists', artists_path, :class => 'btn btn-primary' %>
+</div>

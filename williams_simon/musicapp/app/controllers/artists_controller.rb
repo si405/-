@@ -32,6 +32,10 @@ class ArtistsController < ApplicationController
 		redirect_to artists_path
 	end
 
+	def show
+		@artist = Artist.find(params[:id])
+	end
+
 
 	private
 		def artist_params

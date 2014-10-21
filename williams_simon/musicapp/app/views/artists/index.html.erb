@@ -1,27 +1,8 @@
+<div class="col-xs-12" >
+<div class="col-xs-10 col-xs-offset-2">
+<div class="well">
 <h1>Artists</h1>
-<table>
-  <tr>
-    <th>Artist Name</th>
-    <th>Age</th>
-    <th>Label</th>
-  </tr>
-	<% @artists.each do |artist| %>
-		<tr>
-      		<td><%= artist.artist_name %></td>
-			<td><%= artist.artist_age %></td>
-			<td><%= artist.label_id %></td>
-			<td><%= link_to "View artist songs", artist_songs_path(artist) %></td>
-			<td><%= link_to "Edit artist", edit_artist_path(artist) %></td>
-			<td><%= link_to "Delete artist", artist_path(artist),
-					method: :delete, data: { confirm: 'Are you sure?' } %></td>
-			<br>
-		</tr>
-	<% end %>
-</table>
-<br><br>
-<%= link_to "Create a new artist", new_artist_path %>
-<br><br>
-<%= link_to "View all songs", songs_all_path %>
-<br><br>
-<%= link_to "View all labels", labels_path %>
-<br><br>
+<%= render 'artist_details' %>
+</div>
+</div>
+</div>

@@ -1,18 +1,14 @@
-<div class="col-xs-12" >
-<div class="col-xs-10 col-xs-offset-2">
-<div class="well">
-<h1>All Artists For Label: <%= @label.label_name%></h1>
 <table class="table table-responsive table-bordered table-hover">
   <tr>
     <th>Artist Name</th>
     <th>Age</th>
     <th>Label</th>
   </tr>
-	<% @label.artists.each do |artist| %>
+	<% @artists.each do |artist| %>
 		<tr>
 			<td> <%=link_to "#{artist.artist_name}", artist_path(artist) %> </td>
 			<td><%= artist.artist_age %></td>
-			<td><%= artist.label.label_name %> </td>
+			<td> <%=link_to "#{artist.label.label_name}", labels_path %> </td>
 			<td><%= link_to "View artist songs", artist_songs_path(artist), 
 					:class => 'btn btn-primary' %></td>
 			<td><%= link_to "Edit artist", edit_artist_path(artist),
@@ -25,10 +21,7 @@
 	<% end %>
 </table>
 <br><br>
-<%= link_to "Create a new artist", new_artist_path, :class => 'btn btn-primary' %>
-<%= link_to "View all songs", songs_all_path, :class => 'btn btn-primary' %>
-<%= link_to "View all labels", labels_path, :class => 'btn btn-primary' %>
-<%= link_to "View all artists", artists_path, :class => 'btn btn-primary' %>
-</div>
-</div>
-</div>
+<%= link_to "Create a new artist", new_artist_path, :class => 'btn btn-success' %>
+<%= link_to "View all songs", songs_all_path, :class => 'btn btn-success' %>
+<%= link_to "View all labels", labels_path, :class => 'btn btn-success' %>
+<br><br>

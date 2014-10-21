@@ -1,5 +1,8 @@
-<h1>Songs for <%=@artist.artist_name %></h1>
-<table>
+<div class="col-xs-12" >
+<div class="col-xs-10 col-xs-offset-2">
+<div class="well">
+<h1>Songs for: <%=@artist.artist_name %></h1>
+<table class="table table-responsive table-bordered table-hover">
   <tr>
     <th>Song Title</th>
     <th>Genre</th>
@@ -8,18 +11,22 @@
   </tr>
 	<% @artist.songs.each do |song| %>
 		<tr>
-      		<td><%= song.song_name %></td>
+      <td><%= song.song_name %></td>
 			<td><%= song.genre %></td>
 			<td><%= song.release_date %></td>
 			<td><%= song.duration %></td>
-			<td><%= link_to "Edit song", edit_artist_song_path(@artist,song) %>
-			<td><%= link_to "Delete song", artist_song_path(@artist,song),  
-						method: :delete, data: { confirm: 'Are you sure?' } %>
+			<td><%= link_to "Edit song", edit_artist_song_path(song.artist, song),
+            :class => 'btn btn-info' %></td>
+      		<td><%= link_to "Delete song", songs_destroy_path(song),
+            method: :delete, data: { confirm: 'Are you sure?' }, 
+            :class => 'btn btn-danger' %></td>
 			<br>
 		</tr>
 	<% end %>
 </table>
 <br><br>
-<%= link_to "Create a new song", new_artist_song_path %>
-<br><br>
-<%= link_to "Return to list of artists", artists_path %>
+<%= link_to "Create a new song", new_artist_song_path, :class => 'btn btn-primary' %>
+<%= link_to "Return to list of artists", artists_path, :class => 'btn btn-primary' %>
+</div>
+</div>
+</div>

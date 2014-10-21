@@ -1,20 +1,26 @@
-<br><br>
-<table>
+<table class="table table-responsive table-bordered table-hover">
   <tr>
     <th>Song Title</th>
+    <th>Artist Name</th>
     <th>Genre</th>
     <th>Release Date</th>
     <th>Duration</th>
   </tr>
 	<% @songs.each do |song| %>
 		<tr>
-      		<td><%= song.song_name %></td>
-			<td><%= song.genre %></td>
-			<td><%= song.release_date %></td>
-			<td><%= song.duration %></td>
-			<br>
+      	<td> <%=link_to "#{song.song_name}", artist_song_path(song.artist, song) %> </td>
+     	<td> <%=link_to "#{song.artist.artist_name}", artist_path(song.artist) %> </td>
+		<td><%= song.genre %></td>
+		<td><%= song.release_date %></td>
+		<td><%= song.duration %></td>
+      	<td><%= link_to "Edit song", edit_artist_song_path(song.artist, song),
+            :class => 'btn btn-info' %></td>
+      	<td><%= link_to "Delete song", songs_destroy_path(song),
+            method: :delete, data: { confirm: 'Are you sure?' }, 
+            :class => 'btn btn-danger' %></td>
+		<br>
 		</tr>
 	<% end %>
 </table>
 <br><br>
-<%= link_to "Return to list of artists", artists_path %>
+<%= link_to "Return to list of artists", artists_path,:class => 'btn btn-primary' %>
