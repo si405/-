@@ -1,0 +1,3 @@
+require 'rapgenius'
+require 'pry'
+

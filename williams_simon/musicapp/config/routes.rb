@@ -2,12 +2,15 @@ Rails.application.routes.draw do
 
   resources :artists do
     resources :songs
+    post 'songs/:id' => 'songs#listen', :as => 'listen_song'
   end
+
+# Use resources and exceptions instead of creating these custom routes
 
   get 'songs/all' => 'songs#all'
 
   delete 'songs/destroy' => 'songs#destroy_song'
-
+  
   resources :labels
 
   post 'labels/:id' => 'labels#show'

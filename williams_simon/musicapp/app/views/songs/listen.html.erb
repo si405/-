@@ -1,0 +1,27 @@
+<div class="col-xs-12" >
+<div class="col-xs-10 col-xs-offset-2">
+<div class="well">
+<h1>Listen to: <%=@song.song_name %></h1>
+<table class="table table-responsive table-bordered table-hover">
+  <tr>
+    <th>Song Title</th>
+    <th>Artist Name</th>
+    <th>Genre</th>
+    <th>Release Date</th>
+    <th>Duration</th>
+    <th>Listen</th>
+  </tr>
+  <tr>
+    <td> <%=link_to "#{@song.song_name}", artist_song_path(@song.artist, @song) %> </td>
+    <td> <%=link_to "#{@song.artist.artist_name}", artist_path(@song.artist) %> </td>
+	<td><%= @song.genre %></td>
+	<td><%= @song.release_date %></td>
+	<td><%= @song.duration %></td>
+	<td><%= link_to "Listen", "#{@artist_song_detail[@song.artist.artist_name]}" %></td>
+  </br>
+  </tr>
+</table>
+
+</div>
+</div>
+</div>

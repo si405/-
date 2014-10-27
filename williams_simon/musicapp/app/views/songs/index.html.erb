@@ -17,7 +17,9 @@
 			<td><%= song.duration %></td>
 			<td><%= link_to "Edit song", edit_artist_song_path(song.artist, song),
             :class => 'btn btn-info' %></td>
-      		<td><%= link_to "Delete song", songs_destroy_path(song),
+      <td><%= link_to "Listen to song", artist_listen_song_path(song.artist, song),
+            method: :post, :class => 'btn btn-info' %></td>
+      <td><%= link_to "Delete song", songs_destroy_path(song),
             method: :delete, data: { confirm: 'Are you sure?' }, 
             :class => 'btn btn-danger' %></td>
 			<br>

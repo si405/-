@@ -10,8 +10,8 @@
     <%= f.input :duration, label: false, 
         input_html:{:class => 'form-control', placeholder: "Song duration in seconds"} %>
     <br>
-    <%= f.input :release_date, label: false, 
-        input_html:{:class => 'form-control', placeholder: "Release Date"} %>
+    <%= f.input :release_date, label: false,  
+        input_html:{ placeholder: "Release Date"} %>
     <br>
     <%= f.submit "Submit".html_safe, :class => 'btn btn-lg btn-success' %>
 <% end %>
