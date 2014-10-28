@@ -12,12 +12,16 @@
     <th>Listen</th>
   </tr>
   <tr>
-    <td> <%=link_to "#{@song.song_name}", artist_song_path(@song.artist, @song) %> </td>
-    <td> <%=link_to "#{@song.artist.artist_name}", artist_path(@song.artist) %> </td>
+    <td> <%= @song.song_name %> </td>
+    <td> <%= @song.artist.artist_name %> </td>
 	<td><%= @song.genre %></td>
 	<td><%= @song.release_date %></td>
 	<td><%= @song.duration %></td>
-	<td><%= link_to "Listen", "#{@artist_song_detail[@song.artist.artist_name]}" %></td>
+  <% if @artist_song_detail == {} %>
+        <td> No media available</td>
+    <% else %>
+        <td><%= link_to "Listen", "#{@artist_song_detail[@song.artist.artist_name]}" %></td>
+    <% end %>
   </br>
   </tr>
 </table>

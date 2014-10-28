@@ -5,7 +5,7 @@ class SongsController < ApplicationController
 	end
 
 	def index
-	   @artist = Artist.find(params[:artist_id])
+	   	@artist = Artist.find(params[:artist_id])
 	end
 
 	def new
@@ -51,7 +51,6 @@ class SongsController < ApplicationController
 		# Find the song
 		@song = Song.find(params[:id])
 		@artist_song_detail = RapGeniusApi.search_for_songs(@song.song_name, @song.artist.artist_name)
-		binding.pry
 	end
 
 
