@@ -1,0 +1,23 @@
+<div class="col-xs-12" >
+<div class="col-xs-8 col-xs-offset-2">
+<div class="well">
+<h1 class="gloria_font heading_color">Post</h1>
+<table class="table table-responsive table-bordered table-hover">
+  <tr>
+    <th class="gloria_font"><h3>Image</h3></th>
+    <th class="gloria_font"><h3>Post Title</h3></th>
+  </tr>
+  <tr>
+		<td class="col-xs-4 gloria_font"><img src=<%="#{@post.post_url}"%> 
+				class="img-responsive img-rounded"></td>
+		<td class="col-xs-6 gloria_font"><%= @post.post_title %> </td>
+		<% if user_signed_in? %>
+				<td class="col-xs-1 gloria_font"><%= link_to "Edit post", edit_post_path(post),
+						:class => 'btn btn-info' %></td>
+		<% end %>
+		</br>
+  </tr>
+</table>
+</div>
+</div>
+</div>
