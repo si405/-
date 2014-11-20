@@ -1,0 +1,16 @@
+<div class="col-lg-10 col-lg-offset-1">
+<div class="well">
+
+<p class="bart_font body_color">
+Please choose a route and its associated station:
+</p>
+
+<%= form_tag bartroutestations_path, :class => "form-inline" do %>
+
+        <%= number_field_tag 'bartroute_id', nil, in: 1...10  %>
+        <%= number_field_tag 'bartstation_id', nil, in: 1...10 %>
+        <%= number_field_tag 'route_station_sequence', nil, in: 1...10 %>
+
+        <%= button_tag "Submit".html_safe, class: "btn btn-info bart_font button_color" %>
+
+<% end %>

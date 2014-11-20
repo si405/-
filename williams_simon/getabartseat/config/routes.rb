@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   resources :bartroutes
 
+  resources :bartroutestations
+  
   get '/seed_stations' => 'bartstations#seed_bart_stations'
 
   get '/unseed_stations' => 'bartstations#unseed_bart_stations'
