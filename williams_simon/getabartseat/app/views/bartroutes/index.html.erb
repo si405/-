@@ -1,0 +1,30 @@
+<div class="col-lg-10 col-lg-offset-1">
+<div class="well">
+<table class="table table-responsive table-bordered table-hover">
+<h1 class="col-lg-4 bart_font col-lg-offset-4">Route Details</h1>
+  <tr>
+    <th class="col-lg-1 bart_font">Route</th>
+    <th class="col-lg-1 bart_font">Abbreviation</th>
+    <th class="col-lg-1 bart_font">Route ID</th>
+    <th class="col-lg-1 bart_font">Route No.</th>
+    <th class="col-lg-1 bart_font">Route Color</th>
+  </tr>
+	<% @bartroutes.each do |bartroute| %>
+		<tr>
+			<td class="col-lg-1 bart_font"><%= bartroute.bart_route_name %></td>
+			<td class="col-lg-1 bart_font"><%= bartroute.bart_route_short_name %></td>
+ 			<td class="col-lg-1 bart_font"><%= bartroute.bart_route_id %></td>
+			<td class="col-lg-1 bart_font"><%= bartroute.bart_route_number %></td>
+			<td class="col-lg-1 bart_font"><%= bartroute.bart_route_color %></td>
+		</tr>
+	<% end %>
+</table>
+
+<%= link_to "Create routes", bartroutes_path,
+						:class => 'btn btn-info bart_font' %>
+
+<%= link_to "Seed routes", seed_bart_routes_path,
+						:class => 'btn btn-info bart_font' %>
+
+<%= link_to "Unseed routes", unseed_bart_routes_path,
+						:class => 'btn btn-info bart_font' %>

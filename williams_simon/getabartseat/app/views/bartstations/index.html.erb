@@ -1,0 +1,38 @@
+<div class="col-lg-10 col-lg-offset-1">
+<div class="well">
+<table class="table table-responsive table-bordered table-hover">
+<h1 class="col-lg-4 bart_font col-lg-offset-4">Station Details</h1>
+  <tr>
+    <th class="col-lg-1 bart_font">Station</th>
+    <th class="col-lg-1 bart_font">Abbreviation</th>
+    <th class="col-lg-1 bart_font">Latitude</th>
+    <th class="col-lg-1 bart_font">Longitude</th>
+    <th class="col-lg-1 bart_font">Address</th>
+    <th class="col-lg-1 bart_font">City</th>
+    <th class="col-lg-1 bart_font">County</th>
+    <th class="col-lg-1 bart_font">State</th>
+    <th class="col-lg-1 bart_font">Zip</th>
+  </tr>
+	<% @bartstations.each do |station| %>
+		<tr>
+			<td class="col-lg-1 bart_font"><%= station.station_name %></td>
+			<td class="col-lg-1 bart_font"><%= station.short_name %></td>
+ 			<td class="col-lg-1 bart_font"><%= station.gtfs_latitude %></td>
+			<td class="col-lg-1 bart_font"><%= station.gtfs_longitude %></td>
+			<td class="col-lg-1 bart_font"><%= station.address %></td>
+			<td class="col-lg-1 bart_font"><%= station.city %></td>
+			<td class="col-lg-1 bart_font"><%= station.county %></td>
+			<td class="col-lg-1 bart_font"><%= station.state %></td>
+			<td class="col-lg-1 bart_font"><%= station.zipcode %></td>
+		</tr>
+	<% end %>
+</table>
+
+<%= link_to "Create stations", bartstations_path,
+						:class => 'btn btn-info bart_font' %>
+
+<%= link_to "Seed stations", seed_stations_path,
+						:class => 'btn btn-info bart_font' %>
+
+<%= link_to "Unseed stations", unseed_stations_path,
+						:class => 'btn btn-info bart_font' %>
