@@ -14,6 +14,8 @@ Rails.application.routes.draw do
 
   get '/unseed_bart_routes' => 'bartroutes#unseed_bart_routes'
 
+  get '/remove_bart_route_stations' => 'bartroutestations#remove_bart_route_stations'
+
   root 'bartstations#index'
 
 end

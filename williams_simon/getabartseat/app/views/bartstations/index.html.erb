@@ -28,10 +28,14 @@
 	<% end %>
 </table>
 
-<%= link_to "Routes", bartroutes_path,
+<%= link_to "Create stations", bartstations_path,
 						:class => 'btn btn-info bart_font' %>
 
-<%= link_to "Create stations", bartstations_path,
+<%= link_to "View routes", bartroutes_path,
+						:class => 'btn btn-info bart_font' %>
+
+
+<%= link_to "View route stations", bartroutestations_path,
 						:class => 'btn btn-info bart_font' %>
 
 <%= link_to "Seed stations", seed_stations_path,

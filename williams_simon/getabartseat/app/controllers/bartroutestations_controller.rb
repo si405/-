@@ -26,16 +26,21 @@ class BartroutestationsController < ApplicationController
 		@bartroutestation = Bartroutestation.new(bartroutestation_params)
 		if @bartroutestation.save
 			flash[:success] = "Route station created"
-			redirect_to bartroutes_path 
+			redirect_to bartroutestations_path 
 		else
 			flash[:error] = "Unable to save route station. Please try again"
 			render :create
 		end
 	end
 
+	def remove_bart_route_stations
+		remove_all_bart_route_stations
+		redirect_to bartroutestations_path
+	end
+
 	private
     def bartroutestation_params
-      params.require(:bartroutestation).permit(:bartroute_id, :bartstation_id,:route_station_sequence)
+      params.permit(:bartroute_id, :bartstation_id,:route_station_sequence)
     end
 
 end
