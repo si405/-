@@ -1,5 +1,3 @@
-# This is working. Replaced by simple_form version
-
 <div class="col-lg-10 col-lg-offset-1">
 <div class="well">
 
@@ -7,7 +5,7 @@
 Please choose a route and its associated station:
 </p>
 
-<%= form_tag bartroutestations_path, :class => "form-inline" do %>
+<%= form_tag @bartroutestation, :class => "form-inline" do %>
 
        <%= select_tag(:bartroute_id, options_for_select(@bartroute_names)) %>
 

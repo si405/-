@@ -7,29 +7,39 @@ class BartroutestationsController < ApplicationController
 	end
 
 	def new
+		get_bart_station_pickers
 		@bartroutestation = Bartroutestation.new
-		@bartstations = Bartstation.all
-		@bartstation_names = {}
-		@bartstations.each do |bartstation|
-			@bartstation_names[bartstation.station_name] = bartstation.id
-		end 
-		@bartroutes = Bartroute.all
-		@bartroute_names = {}
-		@bartroutes.each do |bartroute|
-			@bartroute_names[bartroute.bart_route_name] = bartroute.id
-		end 
 	end
 
 	# Create a new route station association
 	def create
-		binding.pry
-		@bartroutestation = Bartroutestation.new(bartroutestation_params)
+ 		params correctly 
+ 		@bartroutestation = Bartroutestation.new(bartroutestation_params)
 		if @bartroutestation.save
 			flash[:success] = "Route station created"
 			redirect_to bartroutestations_path 
 		else
 			flash[:error] = "Unable to save route station. Please try again"
-			render :create
+			get_bart_station_pickers
+			render :new
+		end
+	end
+
+	def edit
+		get_bart_station_pickers
+		@bartroutestation = Bartroutestation.find(params[:id])
+	end
+
+	# Update the modified route station and redirect back to the index
+	def update
+		@bartroutestation = Bartroutestation.find(params[:id])
+#		@bartroutestation.route_station_sequence = (params['bartroutestation']['route_station_sequence'])
+		if @bartroutestation.update(bartroutestation_params)
+			binding.pry
+			flash[:success] = "Route station updated"
+			redirect_to bartroutestations_path
+		else
+			render :edit
 		end
 	end
 
@@ -39,8 +49,9 @@ class BartroutestationsController < ApplicationController
 	end
 
 	private
+
     def bartroutestation_params
-      params.permit(:bartroute_id, :bartstation_id,:route_station_sequence)
+      params.require(:bartroutestation).permit(:bartroute_id, :bartstation_id,:route_station_sequence)
     end
 
 end

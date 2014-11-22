@@ -9,20 +9,17 @@
   </tr>
 	<% @bartroutestations.each do |station| %>
 		<tr>
-			<% binding.pry %>
-
 			<td class="col-lg-1 bart_font body_color">
 				<%= station.bartroute.bart_route_name %></td>
 			<td class="col-lg-1 bart_font body_color">
-				<%= station.bartstation.bart_station_name %></td>
+				<%= station.bartstation.station_name %></td>
  			<td class="col-lg-1 bart_font body_color">
  				<%= station.route_station_sequence %></td>
+ 			<td class="col-lg-1 bart_font body_color"><%= link_to "Edit route stations", edit_bartroutestation_path(station),
+						:class => 'btn btn-info bart_font' %></td>
 		</tr>
 	<% end %>
 </table>
-</div>
-</div>
-
 <%= link_to "Create route stations", new_bartroutestation_path,
 						:class => 'btn btn-info bart_font' %>
 
@@ -31,4 +28,5 @@
 
 <%= link_to "Stations", bartstations_path,
 						:class => 'btn btn-info bart_font' %>
-
+</div>
+</div>
