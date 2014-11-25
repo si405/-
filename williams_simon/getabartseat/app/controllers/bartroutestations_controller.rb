@@ -13,7 +13,6 @@ class BartroutestationsController < ApplicationController
 
 	# Create a new route station association
 	def create
- 		params correctly 
  		@bartroutestation = Bartroutestation.new(bartroutestation_params)
 		if @bartroutestation.save
 			flash[:success] = "Route station created"
