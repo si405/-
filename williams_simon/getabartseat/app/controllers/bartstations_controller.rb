@@ -23,12 +23,8 @@ class BartstationsController < ApplicationController
 	end
 
 	def show
-		@stations = Bartstation.All
+		@bartstations = Bartstation.all
 	end
-
-	def select_journey
-  		@bartstations = get_station_names
-  	end
 
 	def seed_bart_stations
 		# Seed the database with the station details downloaded from the BART API

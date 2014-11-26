@@ -1,10 +1,14 @@
 Rails.application.routes.draw do
   
+  devise_for :admins
+  devise_for :users
   resources :bartstations
 
   resources :bartroutes
 
   resources :bartroutestations
+
+  resources :bartjourneys
   
   get '/seed_stations' => 'bartstations#seed_bart_stations'
 
@@ -16,6 +20,6 @@ Rails.application.routes.draw do
 
   get '/remove_bart_route_stations' => 'bartroutestations#remove_bart_route_stations'
 
-  root 'bartstations#index'
+  root 'bartjourneys#new'
 
 end

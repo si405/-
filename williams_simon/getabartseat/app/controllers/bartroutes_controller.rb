@@ -13,7 +13,7 @@ class BartroutesController < ApplicationController
 	# the view and redirect back to the main index page
 	def create
 		@bartroute = Bartroute.new(bartroute_params)
-		if @route.save
+		if @bartroute.save
 			flash[:success] = "Route created"
 			redirect_to bartroutes_path 
 		else
