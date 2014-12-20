@@ -34,7 +34,6 @@ class BartroutestationsController < ApplicationController
 		@bartroutestation = Bartroutestation.find(params[:id])
 #		@bartroutestation.route_station_sequence = (params['bartroutestation']['route_station_sequence'])
 		if @bartroutestation.update(bartroutestation_params)
-			binding.pry
 			flash[:success] = "Route station updated"
 			redirect_to bartroutestations_path
 		else

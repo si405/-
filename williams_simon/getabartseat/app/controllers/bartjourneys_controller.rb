@@ -13,15 +13,8 @@ class BartjourneysController < ApplicationController
 #		if user_signed_in?
 #			@bartjourney.user_id = current_user.user_id
 #		end
-#		if @bartjourney.direction = "Normal"
-#			@bartjourney_options = calulate_bart_times(@bartjourney)
-#			redirect_to bartjourney_path(@bartjourney_options)
-#		else
-#			@bartjourney_options = calulate_reverse_bart_times(@bartjourney)
-#			redirect_to bartjourney_path(@bartjourney_options)
-#		end
 
-		# May decide to save the journeys for analytics
+		# Save the journeys for analytics
 		if @bartjourney.save
 			flash[:success] = "Journey created"
 			redirect_to bartjourney_path(@bartjourney)
@@ -33,6 +26,12 @@ class BartjourneysController < ApplicationController
 
 	def show
 		@bartjourney = Bartjourney.find(params[:id])
+		if @bartjourney.direction = "Normal"
+			@bartjourney_options = calulate_bart_times(@bartjourney)
+		else
+			@bartjourney_options = calulate_reverse_bart_times(@bartjourney)
+		end
+
 	end
 
 	private
