@@ -26,9 +26,11 @@ module BartjourneysHelper
 		@end_station_code = Bartstation.where("id = #{journeydetails.end_station_id}").pluck("short_name")[0]
 		@end_station = Bartstation.where("id = #{journeydetails.end_station_id}").pluck("station_name")[0]
 
-		@bartjourney_details = get_bart_schedule(@start_station_code,@end_station_code)
+		@bartjourney_options = get_bart_schedule(@start_station_code,@end_station_code)
 	
-		return @bartjourney_details
+		# Get the full route information and route colors for display
+
+		return @bartjourney_options
 
 	end
 
@@ -77,14 +79,15 @@ module BartjourneysHelper
 			@departure_times = get_real_time_departures(origin_station)
 
 			# Filter the results of the real-time departures to find those that match the 
-			# route options
+			# route options. 
 
 			@filtered_departure_times = {}
 
 			@departure_times.each do |station,times|
 				@bartroute_options.each do |bartroute_station,v|
-					if station = bartroute_station
-						@filtered_departure_times[station] = times
+					if station == bartroute_station
+						station_name = Bartstation.where("short_name = '#{bartroute_station}'").pluck("station_name")[0]
+						@filtered_departure_times[station_name] = times
 					end
 				end
 			end

@@ -5,7 +5,15 @@
 <%= "To get from #{@start_station} to #{@end_station} your options are:" %>
 </p>
 
-Bartjourney_details: <%= @bartjourney_details %>
+
+<% @bartjourney_options.each do |key,value|%>
+	<%= "#{key} leaving in " %>
+	<% value.each do |val| %>
+		<%= "#{val}, " %>
+	<% end %>
+	<%= "minutes" %> 
+	</br>
+<% end %>
 
 </div>
 
