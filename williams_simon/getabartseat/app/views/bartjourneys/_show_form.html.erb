@@ -5,15 +5,16 @@
 <%= "To get from #{@start_station} to #{@end_station} your options are:" %>
 </p>
 
-
+<p class="body_font body_color">
 <% @bartjourney_options.each do |key,value|%>
 	<%= "#{key} leaving in " %>
 	<% value.each do |val| %>
 		<%= "#{val}, " %>
 	<% end %>
 	<%= "minutes" %> 
-	</br>
+	</br></br>
 <% end %>
+</p>
 
 </div>
 

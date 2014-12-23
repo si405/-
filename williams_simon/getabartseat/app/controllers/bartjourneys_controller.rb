@@ -26,12 +26,7 @@ class BartjourneysController < ApplicationController
 
 	def show
 		@bartjourney = Bartjourney.find(params[:id])
-		if @bartjourney.direction = "Normal"
-			@bartjourney_options = calulate_bart_times(@bartjourney)
-		else
-			@bartjourney_options = calulate_reverse_bart_times(@bartjourney)
-		end
-
+		@bartjourney_options = calulate_bart_times(@bartjourney)
 	end
 
 	private
