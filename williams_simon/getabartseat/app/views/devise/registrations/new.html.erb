@@ -8,7 +8,7 @@
 	html: {:class => 'form-horizontal'}) do |f| %>
   <%= f.error_notification %>
 
-    <%= f.input :email, required: true, autofocus: true,
+    <%= f.input :email, required: true, autofocus: true, 
     	input_html:{:class => 'form control bart_font body_color'}  %>
     <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @validatable),
     	input_html:{:class => 'form control bart_font body_color'} %>

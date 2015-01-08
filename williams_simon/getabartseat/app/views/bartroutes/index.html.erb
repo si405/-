@@ -8,6 +8,7 @@
     <th class="col-lg-1 body_font heading_color">Route ID</th>
     <th class="col-lg-1 body_font heading_color">Route No.</th>
     <th class="col-lg-1 body_font heading_color">Route Color</th>
+    <th class="col-lg-1 body_font heading_color">DB Id</th>
   </tr>
 	<% @bartroutes.each do |bartroute| %>
 		<tr>
@@ -16,6 +17,7 @@
  			<td class="col-lg-1 body_font body_color"><%= bartroute.bart_route_id %></td>
 			<td class="col-lg-1 body_font body_color"><%= bartroute.bart_route_number %></td>
 			<td class="col-lg-1 body_font body_color"><%= bartroute.bart_route_color %></td>
+			<td class="col-lg-1 body_font body_color"><%= bartroute.id %></td>
 		</tr>
 	<% end %>
 </table>
