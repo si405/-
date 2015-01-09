@@ -128,6 +128,9 @@ module BartjourneysHelper
 				# For each train departing the origin station find the corresponding 
 				# arrival/departure time at the upstream stations, e.g. if the SFO train 
 				# leaves EMBR at 17:00 find out what time it arrives/departs MONT, POWL etc.
+				# Check that the time of departure at the next station is not less than the 
+				# time of departure from the previous station as this indicates a different 
+				# train that is already upstream from the origin
 
 				departure_train_options = {}
 				origin_departure_times.each do |train_route,train_times|
@@ -137,11 +140,11 @@ module BartjourneysHelper
 					train_times.each do |train_time|
 						times_from_each_station[origin_station] = train_times[i]
 						upstream_departure_times.each do |upstream_station,upstream_times|
-							if upstream_times[train_route][i].to_i > latest_time
-								times_from_each_station[upstream_station] = upstream_times[train_route][i]
-								latest_time = upstream_times[train_route][i].to_i
-
-								binding.pry
+							if upstream_times.has_key?(train_route)
+								if upstream_times[train_route][i].to_i > latest_time
+									times_from_each_station[upstream_station] = upstream_times[train_route][i]
+									latest_time = upstream_times[train_route][i].to_i
+								end
 							end
 						end
 					end
@@ -149,7 +152,39 @@ module BartjourneysHelper
 					departure_train_options[train_route] = times_from_each_station
 				end
 
-				route_departure_times = departure_train_options
+				# For each upstream station find the northbound departures for each of those
+				# stations. Since the destination cannot be specified in the BART API it's
+				# necessary to get all trains and then filter the results
+
+				upstream_destination_departure_times = {}
+				departure_stations.each do |bartroute, upstream_stations|
+					upstream_stations.each do |departure_station|
+						
+						# The array contains the id of the station and the API needs the short name
+						start_station_code = Bartstation.where("id = #{departure_station.bartstation_id}").pluck("short_name")[0]
+						
+						# Get the departure times for the upstream station in the northbound 
+						# direction
+
+						bart_direction = 'n'
+
+						departure_times = []
+						departure_times = get_real_time_departures(start_station_code,bart_direction)
+						
+						# The API returns all the deaprtures from this station.
+						# Filter the results to only get those trains that are destined for the
+						# destination 
+
+						upstream_destination_departure_times[start_station_code] =
+								filter_departures(departure_times,bartroute_options)
+					end
+
+					binding.pry
+
+				end
+
+				# route_departure_times = departure_train_options
+				route_departure_times = upstream_destination_departure_times
 			end
 		end
 
