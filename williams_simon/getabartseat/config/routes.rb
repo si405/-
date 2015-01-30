@@ -20,6 +20,8 @@ Rails.application.routes.draw do
 
   get '/remove_bart_route_stations' => 'bartroutestations#remove_bart_route_stations'
 
+  get '/testme' => 'bartjourneys#testme'
+
   root 'bartjourneys#new'
 
 end

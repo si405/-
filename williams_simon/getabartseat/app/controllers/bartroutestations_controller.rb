@@ -3,7 +3,7 @@ class BartroutestationsController < ApplicationController
 	include BartroutestationsHelper
 
 	def index
-		@bartroutestations = Bartroutestation.all
+		@bartroutestations = Bartroutestation.all.order('bartroute_id', 'route_station_sequence')
 	end
 
 	def new

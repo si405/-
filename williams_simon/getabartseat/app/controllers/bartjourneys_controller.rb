@@ -29,6 +29,11 @@ class BartjourneysController < ApplicationController
 		@bartjourney_options = calculate_bart_times(@bartjourney)
 	end
 
+	def testme
+		@bartjourney = test_program
+	end
+
+
 	private
 
     def bartjourney_params

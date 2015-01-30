@@ -6,12 +6,14 @@
 </p>
 
 <p class="body_font body_color">
-<% @bartjourney_options.each do |key,value|%>
-	<%= "#{key} leaving in " %>
-	<% value.each do |val| %>
-		<%= "#{val}, " %>
+<% @bartjourney_options.each do |origin_train,destination_options|%>
+	<%= "#{origin_train[0]} leaving in #{origin_train[1]} min connects at " %>
+	</br>
+	<% destination_options.each do |station, destination| %>
+		<%= "#{station[0]} in #{station[1]} mins to #{destination}" %>
+		</br>
 	<% end %>
-	<%= "minutes" %> 
+
 	</br></br>
 <% end %>
 </p>

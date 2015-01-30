@@ -50,7 +50,8 @@ module BartjourneysHelper
 		# Use a hash to store the route options to manage duplicate entries
 
 		bartroute_options = {}
-		route_departure_times ={}
+		feasible_train_options ={}
+		upstream_station_codes	= {}
 
 		response_XML.xpath("///trip").each do |node|
 			
@@ -79,12 +80,12 @@ module BartjourneysHelper
 			# departures from those stations
 
 			departure_times = {}
-			departure_stations = []			
+			departure_stations = []		
 
 			if @bartjourney.direction == "Normal"
 				bart_direction = nil
 				departure_times = get_real_time_departures(origin_station,bart_direction)
-				route_departure_times = 
+				feasible_train_options = 
 					filter_departures(departure_times,bartroute_options)
 			else
 				
@@ -93,14 +94,14 @@ module BartjourneysHelper
 				
 				bart_direction = 's'
 				
-				# Find the departure times from the current station heading in the 
-				# reverse direction
-				
-				origin_departure_times = get_real_time_departures(origin_station,bart_direction)
+#				# Find the departure times from the current station heading in the 
+#				# reverse direction
+#				
+#				origin_departure_times = get_real_time_departures(origin_station,bart_direction)
 				
 				# For the reverse direction find the upstream stations on each route
 				# serving the origin station. The returned hash has each upstream 
-				# bartroutestation
+				# bartroutestation including the origin station
 				
 				departure_stations = get_upstream_stations(origin_station)
 				
@@ -122,35 +123,14 @@ module BartjourneysHelper
 						upstream_departure_times[start_station_code] = 
 							get_real_time_departures(start_station_code,bart_direction)
 						
+						upstream_station_codes[start_station_code] = departure_station.bartstation_id
+
 					end
 				end
 
-				# For each train departing the origin station find the corresponding 
-				# arrival/departure time at the upstream stations, e.g. if the SFO train 
-				# leaves EMBR at 17:00 find out what time it arrives/departs MONT, POWL etc.
-				# Check that the time of departure at the next station is not less than the 
-				# time of departure from the previous station as this indicates a different 
-				# train that is already upstream from the origin
+				# 2015-01-30 CODE CUT 1 FROM HERE -----
 
-				departure_train_options = {}
-				origin_departure_times.each do |train_route,train_times|
-					times_from_each_station = {}
-					i = 0
-					latest_time = -1
-					train_times.each do |train_time|
-						times_from_each_station[origin_station] = train_times[i]
-						upstream_departure_times.each do |upstream_station,upstream_times|
-							if upstream_times.has_key?(train_route)
-								if upstream_times[train_route][i].to_i > latest_time
-									times_from_each_station[upstream_station] = upstream_times[train_route][i]
-									latest_time = upstream_times[train_route][i].to_i
-								end
-							end
-						end
-					end
-					i = i + 1
-					departure_train_options[train_route] = times_from_each_station
-				end
+				# 2015-01-30 CODE CUT 1 TO HERE -----
 
 				# For each upstream station find the northbound departures for each of those
 				# stations. Since the destination cannot be specified in the BART API it's
@@ -171,24 +151,35 @@ module BartjourneysHelper
 						departure_times = []
 						departure_times = get_real_time_departures(start_station_code,bart_direction)
 						
-						# The API returns all the deaprtures from this station.
+						# The API returns all the departures from this station.
 						# Filter the results to only get those trains that are destined for the
 						# destination 
 
 						upstream_destination_departure_times[start_station_code] =
 								filter_departures(departure_times,bartroute_options)
 					end
-
-					binding.pry
-
 				end
 
-				# route_departure_times = departure_train_options
-				route_departure_times = upstream_destination_departure_times
+				# Align the departures from the origin station with the departures
+				# from the upstream stations to show feasible train options
+
+				# 2015-01-30 CODE CUT 2 FROM HERE -----
+
+				# 2015-01-30 CODE CUT 2 TO HERE -----
+			
+				feasible_train_options = 
+					determine_feasible_trains(origin_station,upstream_departure_times,upstream_destination_departure_times)
 			end
 		end
 
-		return route_departure_times
+		# Sort the feasible train options hash in order of upstream station
+		# The hash upstream_station_codes holds the upstream stations in order
+
+
+
+		binding.pry
+
+		return feasible_train_options
 	end
 
 	# Use the departure station to get the real-time departures from that station
@@ -297,7 +288,8 @@ module BartjourneysHelper
 			bartroute_id = station_route
 			bartstation_sequence = station_sequence			
 			upstream_stations[bartroute_id] = 
-				Bartroutestation.where("bartroute_id = #{bartroute_id} AND route_station_sequence > #{bartstation_sequence}").take(5)
+				Bartroutestation.where("bartroute_id = #{bartroute_id} AND 
+					route_station_sequence >= #{bartstation_sequence}").order('route_station_sequence').take(6)
 		end
 
 		# Return the list of upstream stations for each route from the origin station
@@ -306,5 +298,252 @@ module BartjourneysHelper
 
 	end
 
+	def determine_feasible_trains(origin_station,origin_trains,destination_trains)
+		# Compare the arrival times at each upstream station with the departure times to 
+		# the desired destination. If the train arrives before the destination train is 
+		# departing then it is a valid option 
+
+		possible_trains = {}
+		valid_trains = {}
+		valid_train = {}
+		train_options = {}
+		train_id = {}
+
+		# Process all departures from the origin station
+		origin_trains[origin_station].each do |destination, departure_times|
+			departure_train_sequence = 0
+			departure_times.each do |departure_time|
+				latest_departure_time = departure_time.to_i
+				train_id = [destination, departure_time]
+				valid_trains[origin_station] = departure_time
+				origin_trains.each do |departure_station, destination_details|
+					if departure_station != origin_station
+						# This is an upstream station
+						destination_details.each do |train_destination,departure_times_from_next_station|
+							if train_destination == destination
+								# This train is going to the same destination
+								if departure_times_from_next_station[departure_train_sequence].to_i >=
+									latest_departure_time.to_i
+									# This train leaves the upstream station later than the prior
+									# station and is therefore part of the same journey
+									valid_trains[departure_station] = 
+										departure_times_from_next_station[departure_train_sequence]
+									latest_departure_time = 
+										departure_times_from_next_station[departure_train_sequence]
+								end
+							end
+
+						end
+					end
+				end
+				# At this point we have processed all the upstream stations for this 
+				# particular origin train departure time
+
+				train_options[train_id] = valid_trains
+				departure_train_sequence = departure_train_sequence + 1
+				valid_trains = {}
+			end
+		end
+	
+		
+		# We have the schedule for each train departing the origin station and when it leaves
+		# each upstream station so now we can calculate which of the destination trains we can 
+		# meet at each station
+
+		train_options.each do |train, train_times|
+			train_times.each do |arrival_station, arrival_time|
+				if arrival_station != origin_station
+					# Ignore the entry for the origin station. This is only used in the 
+					# display. Find all the destination trains that this train can meet 
+					# at this station
+					destination_trains[arrival_station].each do |train_destination, destination_times|
+						destination_times.each do |destination_departure_time|
+							if destination_departure_time.to_i >= arrival_time.to_i
+								# The destination train leaves after this train arrives
+								train_id = [arrival_station,destination_departure_time]
+								valid_trains[train_id] = train_destination
+							end
+						end
+					end
+					# All the destination train departures for this station have been processed
+					# so write the options to the hash
+				end
+			end
+			possible_trains[train] = valid_trains
+			valid_trains = {}
+		end 
+		return possible_trains
+	end
+
+	def test_program
+		# Sort the hash to return the chronological options for each departing train
+
+		feasible_train_options = 
+			 {["DALY", "3"]=>
+			  {["MONT", "11"]=>"Pittsburg/Bay Point",
+			   ["MONT", "24"]=>"Pittsburg/Bay Point",
+			   ["MONT", "36"]=>"Pittsburg/Bay Point",
+			   ["POWL", "9"]=>"Pittsburg/Bay Point",
+			   ["POWL", "23"]=>"Pittsburg/Bay Point",
+			   ["POWL", "35"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "7"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "21"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "33"]=>"Pittsburg/Bay Point"},
+			 ["DALY", "9"]=>
+			  {["MONT", "11"]=>"Pittsburg/Bay Point",
+			   ["MONT", "24"]=>"Pittsburg/Bay Point",
+			   ["MONT", "36"]=>"Pittsburg/Bay Point",
+			   ["POWL", "23"]=>"Pittsburg/Bay Point",
+			   ["POWL", "35"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "21"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "33"]=>"Pittsburg/Bay Point"},
+			 ["DALY", "17"]=>
+			  {["MONT", "24"]=>"Pittsburg/Bay Point",
+			   ["MONT", "36"]=>"Pittsburg/Bay Point",
+			   ["POWL", "23"]=>"Pittsburg/Bay Point",
+			   ["POWL", "35"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "33"]=>"Pittsburg/Bay Point"},
+			 ["MLBR", "13"]=>{["MONT", "24"]=>"Pittsburg/Bay Point", ["MONT", "36"]=>"Pittsburg/Bay Point"},
+			 ["MLBR", "28"]=>{["MONT", "36"]=>"Pittsburg/Bay Point"},
+			 ["MLBR", "43"]=>{},
+			 ["SFIA", "6"]=>
+			  {["MONT", "11"]=>"Pittsburg/Bay Point",
+			   ["MONT", "24"]=>"Pittsburg/Bay Point",
+			   ["MONT", "36"]=>"Pittsburg/Bay Point",
+			   ["POWL", "9"]=>"Pittsburg/Bay Point",
+			   ["POWL", "23"]=>"Pittsburg/Bay Point",
+			   ["POWL", "35"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "21"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "33"]=>"Pittsburg/Bay Point",
+			   ["16TH", "19"]=>"Pittsburg/Bay Point",
+			   ["16TH", "31"]=>"Pittsburg/Bay Point",
+			   ["24TH", "17"]=>"Pittsburg/Bay Point",
+			   ["24TH", "29"]=>"Pittsburg/Bay Point"},
+			 ["SFIA", "11"]=>
+			  {["MONT", "24"]=>"Pittsburg/Bay Point",
+			   ["MONT", "36"]=>"Pittsburg/Bay Point",
+			   ["POWL", "23"]=>"Pittsburg/Bay Point",
+			   ["POWL", "35"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "21"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "33"]=>"Pittsburg/Bay Point",
+			   ["16TH", "19"]=>"Pittsburg/Bay Point",
+			   ["16TH", "31"]=>"Pittsburg/Bay Point",
+			   ["24TH", "29"]=>"Pittsburg/Bay Point"},
+			 ["SFIA", "21"]=>
+			  {["MONT", "24"]=>"Pittsburg/Bay Point",
+			   ["MONT", "36"]=>"Pittsburg/Bay Point",
+			   ["POWL", "35"]=>"Pittsburg/Bay Point",
+			   ["CIVC", "33"]=>"Pittsburg/Bay Point",
+			   ["16TH", "31"]=>"Pittsburg/Bay Point"}}
+
+		feasible_train_options.each do |train,departure_options|
+			i = 0
+			departure_options.each do |departure_details, destination|
+				if i == 0
+					# First entry for this train
+				end
+				
+			end
+		end
+
+	end
+
+	def test_program2
+	# Test program to process hash
+
+		origin_trains = {"EMBR"=>{"DALY"=>["1", "5", "9"], "MLBR"=>["7", "20", "35"], "SFIA"=>["14", "27", "42"]},
+		 "MONT"=>{"DALY"=>["3", "6", "10"], "MLBR"=>["8", "21", "36"], "SFIA"=>["15", "29", "44"]},
+		 "POWL"=>{"DALY"=>["5", "7", "12"], "MLBR"=>["10", "23", "38"], "SFIA"=>["17", "30"]},
+		 "CIVC"=>{"DALY"=>["6", "9", "14"], "MLBR"=>["11", "24", "39"], "SFIA"=>["2", "18", "32"]},
+		 "16TH"=>{"DALY"=>["1", "8", "11"], "MLBR"=>["13", "26", "41"], "SFIA"=>["4", "21", "34"]},
+		 "GLEN"=>{"DALY"=>["2", "6", "14"], "MLBR"=>["4", "18", "31"], "SFIA"=>["9", "26", "39"]}}
+
+		# This is the hash upstream_destination_departure_times
+		destination_trains = {"EMBR"=>{"Pittsburg/Bay Point"=>["2", "18", "31"]},
+		 "MONT"=>{"Pittsburg/Bay Point"=>["16", "30"]},
+		 "POWL"=>{"Pittsburg/Bay Point"=>["14", "28", "43"]},
+		 "CIVC"=>{"Pittsburg/Bay Point"=>["13", "27", "42"]},
+		 "16TH"=>{"Pittsburg/Bay Point"=>["11", "25", "40"]},
+		 "GLEN"=>{"Pittsburg/Bay Point"=>["6", "20", "35"]}}
+
+
+		origin_station = "EMBR"
+		possible_trains = {}
+		valid_trains = {}
+		valid_train = {}
+		train_options = {}
+		train_id = {}
+
+		# Process all departures from the origin station
+		origin_trains[origin_station].each do |destination, departure_times|
+			departure_train_sequence = 0
+			departure_times.each do |departure_time|
+				latest_departure_time = departure_time.to_i
+				train_id = [destination, departure_time]
+				valid_trains[origin_station] = departure_time
+				origin_trains.each do |departure_station, destination_details|
+					if departure_station != origin_station
+						# This is an upstream station
+						destination_details.each do |train_destination,departure_times_from_next_station|
+							if train_destination == destination
+								# This train is going to the same destination
+								if departure_times_from_next_station[departure_train_sequence].to_i >=
+									latest_departure_time.to_i
+									# This train leaves the upstream station later than the prior
+									# station and is therefore part of the same journey
+									valid_trains[departure_station] = 
+										departure_times_from_next_station[departure_train_sequence]
+									latest_departure_time = 
+										departure_times_from_next_station[departure_train_sequence]
+								end
+							end
+
+						end
+					end
+				end
+				# At this point we have processed all the upstream stations for this 
+				# particular origin train departure time
+
+				train_options[train_id] = valid_trains
+				departure_train_sequence = departure_train_sequence + 1
+				valid_trains = {}
+			end
+		end
+	
+		
+		# We have the schedule for each train departing the origin station and when it leaves
+		# each upstream station so now we can calculate which of the destination trains we can 
+		# meet at each station
+
+		train_options.each do |train, train_times|
+			train_times.each do |arrival_station, arrival_time|
+				if arrival_station != origin_station
+					# Ignore the entry for the origin station. This is only used in the 
+					# display. Find all the destination trains that this train can meet 
+					# at this station
+					destination_trains[arrival_station].each do |train_destination, destination_times|
+						destination_times.each do |destination_departure_time|
+							if destination_departure_time.to_i >= arrival_time.to_i
+								# The destination train leaves after this train arrives
+								train_id = [arrival_station,destination_departure_time]
+								valid_trains[train_id] = train_destination
+							end
+						end
+					end
+					# All the destination train departures for this station have been processed
+					# so write the options to the hash
+				end
+			end
+
+			possible_trains[train] = valid_trains
+			valid_trains = {}
+		
+		end 
+
+		binding.pry
+
+		return possible_trains
+
+	end
 
 end
